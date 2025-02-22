@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skyebank-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: skyebank
+  template:
+    metadata:
+      labels:
+        app: skyebank
+    spec:
+      containers:
+      - name: kitibank
+        image: sholly333/skyebank:latest
+        ports:
+        - containerPort: 3000
