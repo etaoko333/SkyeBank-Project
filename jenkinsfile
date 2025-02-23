@@ -18,11 +18,6 @@ pipeline{
                 git branch: 'main', url: 'https://github.com/Aj7Ay/reddit-clone-k8s.git'
             }
         }
-        stage('Install Dependencies') {
-            steps {
-                sh "npm install"
-            }
-        }
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
@@ -38,10 +33,11 @@ pipeline{
                 }
             }
         }
-        stage('OWASP FS SCAN') {
+        stage('OWASP Dependency Check') {
             steps {
+                sh 'export NVD_API_KEY=$NVD_API_KEY && dependency-check.sh --update'  // Update the NVD database
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'  // Publish the report
             }
         }
         stage('TRIVY FS SCAN') {
