@@ -43,6 +43,11 @@ jobs:
           unzip sonar-scanner-cli-4.6.2.2472-linux.zip -d $HOME
           export PATH=$HOME/sonar-scanner
       
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v3
+        with:
+            dotnet-version: '6.0.x'
+
       - name: OWASP Dependency Check
         run: |
           curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.1/dependency-check-8.2.1-release.zip
@@ -53,15 +58,8 @@ jobs:
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v4
         with:
-            name: dependency-check-report
-            path: dependency-check-report.xml
-
-      - name: Upload Dependency Check Report
-        uses: actions/upload-artifact@v4
-        with:
-            name: dependency-check-report
-            path: dependency-check-report.xml
-
+          name: dependency-check-report
+          path: dependency-check-report.xml
 
       - name: Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@master
