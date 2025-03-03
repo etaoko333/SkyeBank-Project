@@ -1,11 +1,11 @@
-**#####Deploying a Netflix Clone on Kubernetes using DevSecOps methodology**
-In this project we would be deploying Netflix Clone application on an EKS cluster using DevSecOps methodology. We would be making use of security tools like SonarQube, OWASP Dependency Check and Trivy. We would also be monitoring our EKS cluster using monitoring tools like Prometheus and Grafana. Most importantly we will be using ArgoCD for the Deployment.
+**Deploying a Netflix Clone on Kubernetes using DevSecOps methodology**
+- In this project we would be deploying Netflix Clone application on an EKS cluster using DevSecOps methodology. We would be making use of security tools like SonarQube, OWASP Dependency Check and Trivy. We would also be monitoring our EKS cluster using monitoring - tools like Prometheus and Grafana. Most importantly we will be using ArgoCD for the Deployment.
 
-Step 1: Launch an EC2 Instance and install Jenkins, SonarQube, Docker and Trivy
+**-Step 1**: Launch an EC2 Instance and install Jenkins, SonarQube, Docker and Trivy
 We would be making use of Terraform to launch the EC2 instance. We would be adding a script as userdata for the installation of Jenkins, SonarQube, Trivy and Docker.
 
-Step 2: Access Jenkins at port 8080 and install required plugins
-Install the following plugins:
+**Step 2: Access Jenkins at port 8080 and install required plugins**
+- Install the following plugins:
 
 1. NodeJS
 2. Eclipse Temurin Installer
@@ -103,36 +103,40 @@ Go to Dashboard -> New Item -> Pipeline
         }
     }
 }``
-Step 7: Create an EKS Cluster using Terraform
-Prerequisite: Install kubectl and helm before executing the commands below
+**Step 7: Create an EKS Cluster using Terraform**
+-Prerequisite: Install kubectl and helm before executing the commands below
 
-Step 8: Deploy Prometheus and Grafana on EKS
+**Step 8: Deploy Prometheus and Grafana on EKS**
 In order to access the cluster use the command below:
 
-aws eks update-kubeconfig --name "Cluster-Name" --region "Region-of-operation"
-We need to add the Helm Stable Charts for your local.
-helm repo add stable https://charts.helm.sh/stable
-Add prometheus Helm repo
+- aws eks update-kubeconfig --name "Cluster-Name" --region "Region-of-operation"
+- We need to add the Helm Stable Charts for your local.
+- helm repo add stable https://charts.helm.sh/stable
+
+**Add prometheus Helm repo**
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-Create Prometheus namespace
-kubectl create namespace prometheus
-Install kube-prometheus stack
-helm install stable prometheus-community/kube-prometheus-stack -n prometheus
-Edit the service and make it LoadBalancer
-kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
-Edit the grafana service too to change it to LoadBalancer
-kubectl edit svc stable-grafana -n prometheus
-Step 9: Deploy ArgoCD on EKS to fetch the manifest files to the cluster
-Create a namespace argocd
-kubectl create namespace argocd
-Add argocd repo locally
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
-By default, argocd-server is not publically exposed. In this scenario, we will use a Load Balancer to make it usable:
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-We get the load balancer hostname using the command below:
-kubectl get svc argocd-server -n argocd -o json
-Once you get the load balancer hostname details, you can access the ArgoCD dashboard through it.
+- Create Prometheus namespace
+- kubectl create namespace prometheus
 
-We need to enter the Username and Password for ArgoCD. The username will be admin by default. For the password, we need to run the command below:
+**Install kube-prometheus stack**
+- helm install stable prometheus-community/kube-prometheus-stack -n prometheus
+- Edit the service and make it LoadBalancer
+- kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
+- Edit the grafana service too to change it to LoadBalancer
+- kubectl edit svc stable-grafana -n prometheus
+  
+**Step 9: Deploy ArgoCD on EKS to fetch the manifest files to the cluster**
+- Create a namespace argocd
+- kubectl create namespace argocd
+- Add argocd repo locally
+- kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+- By default, argocd-server is not publically exposed. In this scenario, we will use a Load Balancer to make it usable:
+- kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+- We get the load balancer hostname using the command below:
+- kubectl get svc argocd-server -n argocd -o json
+- 
+- Once you get the load balancer hostname details, you can access the ArgoCD dashboard through it.
 
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+- We need to enter the Username and Password for ArgoCD. The username will be admin by default. For the password, we need to run the command below:
+
+- kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
