@@ -20,7 +20,7 @@ pipeline{
         }
         stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('sonar-server') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=skyebank \
                     -Dsonar.projectKey=skyebank '''
                 }
@@ -28,14 +28,14 @@ pipeline{
         }
         stage("quality gate"){
            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
          stage('OWASP FS SCAN') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'OWASP DP-Check'
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
@@ -49,8 +49,8 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
                        sh "docker build -t skyebank ."
-                       sh "docker tag skyebank sholly333/reddit:latest "
-                       sh "docker push sholly333/skyebank:latest "
+                       sh "docker tag skyebank sholly333/skyebank:latest"
+                       sh "docker push sholly333/skyebank:latest"
                     }
                 }
             }
