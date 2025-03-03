@@ -33,11 +33,10 @@ pipeline{
                 }
             }
         }
-        stage('OWASP Dependency Check') {
+         stage('OWASP FS SCAN') {
             steps {
-                sh 'export NVD_API_KEY=$NVD_API_KEY && dependency-check.sh --update'  // Update the NVD database
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'  // Publish the report
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'OWASP DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
         stage('TRIVY FS SCAN') {
