@@ -13,7 +13,7 @@ spec:
         app: skyebank
     spec:
       containers:
-      - name: kitibank
+      - name: skyebank
         image: sholly333/skyebank:latest
         ports:
         - containerPort: 3000
