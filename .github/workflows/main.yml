@@ -106,4 +106,4 @@ jobs:
         run: docker pull sholly333/skyebank:latest
 
       - name: Deploy to Container
-        run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
+        run: docker run -d --name skyebank-app -p 3000:81 sholly333/skyebank:latest
