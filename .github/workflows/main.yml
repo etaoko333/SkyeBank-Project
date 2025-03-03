@@ -48,7 +48,20 @@ jobs:
           curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.1/dependency-check-8.2.1-release.zip
           unzip dependency-check-8.2.1-release.zip
           chmod +x dependency-check/bin/dependency-check.sh
-          dependency-check/bin/dependency-check.sh --scan . --format "XML" --disableYarnAudit --disableNodeAudit
+          dependency-check/bin/dependency-check.sh --scan ./ --disableYarnAudit --disableNodeAudit --format "XML" --out dependency-check-report.xml
+
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+            name: dependency-check-report
+            path: dependency-check-report.xml
+
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+            name: dependency-check-report
+            path: dependency-check-report.xml
+
 
       - name: Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@master
