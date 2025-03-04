@@ -1,0 +1,7 @@
+.cache/
+	.scannerwork/
+	dependency-check-8.2.1-release.zip
+	dependency-check-report.xml
+	dependency-check/
+	sonar-scanner-cli-4.6.2.2472-linux.zip
+	trivyfs.txt
