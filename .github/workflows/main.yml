@@ -98,12 +98,35 @@ jobs:
           docker-scout quickview sholly333/skyebank:latest
           docker-scout cves sholly333/skyebank:latest
 
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Docker Pull Image
-        run: docker pull sholly333/skyebank:latest
+      - name: Docker tag
+        id: version
+        run: |
+          VERSION=v$(date +"%Y%m%d%H%M%S")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Deploy to Container
-        run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
+      # Build the Docker Image
+      - name: Build Docker Image
+        run: |
+          docker build . -t sholly333/skyebank-app:${{ env.VERSION }} 
+      
+      # Push the Docker Image
+      - name: Push Docker Image
+        run: |
+          docker push sholly333/skyebank-app:${{ env.VERSION }}
+      
+      # UPdate the K8s Manifest Files
+      - name: Update K8s Manifests
+        run: |
+          cat deployment.yaml
+          sed -i "s|image: sholly333/skyebank-app:.*|image: sholly333/skyebank-app:${{ env.VERSION }}|g" deployment.yaml
+          cat deployment.yaml
+
+      # Update Github
+      - name: Commit the changes
+        run: |
+          git config --global user.email "<>"
+          git config --global user.name "GitHub Actions Bot"
+          git add deployment.yaml
+          git commit -m "Update deployment.yaml with new image version - ${{ env.VERSION }}"
+          git remote set-url origin https://github-actions:${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}@github.com/sholly333/skyebank-app-GitHub-Actions-ArgoCD.git
+          git push origin main
