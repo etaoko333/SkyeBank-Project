@@ -40,8 +40,16 @@ pipeline{
     stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=skyebank \
-                    -Dsonar.projectKey=skyebank '''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Skyebank \
+                    -Dsonar.projectKey=Skyebank '''
+                }
+            }
+        }
+
+ stage("quality gate"){
+           steps {
+                timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
