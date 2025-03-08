@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>twitter-app</artifactId>
+	<artifactId>skyebank-app</artifactId>
 	<version>0.0.4</version>
 	<name>twitter-app</name>
 	<description>Demo project for Spring Boot</description>
