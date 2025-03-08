@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kitibank
+  name: SkyeBank
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/etaoko333/SkyBank-Project.git'
+    repoURL: 'https://github.com/etaoko333/SkyeBank-Project.git'
     path: k8s
     targetRevision: HEAD
   destination:
