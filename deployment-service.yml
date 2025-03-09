@@ -6,11 +6,11 @@ spec:
   replicas: 5
   selector:
     matchLabels:
-      app: skyebank
+      app: skyebank  # Ensure this matches the pod template labels
   template:
     metadata:
       labels:
-        app: skyebank
+        app: skyebank  # Ensure this matches the selector
     spec:
       containers:
       - name: skyebank
@@ -24,7 +24,7 @@ metadata:
   name: skyebank-service
 spec:
   selector:
-    app: skyebank
+    app: skyebank  # Ensure this matches the pod labels
   ports:
     - protocol: TCP
       port: 80
