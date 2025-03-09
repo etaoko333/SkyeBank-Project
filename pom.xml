@@ -8,7 +8,7 @@
 		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.example.SkyebankApplication</groupId>
 	<artifactId>skyebank-app</artifactId>
 	<version>0.0.4</version>
 	<name>twitter-app</name>
