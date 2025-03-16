@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: skyebank-app
-  namespace: argocd  # Ensure ArgoCD is installed in this namespace
+  name: skyebank-app  # Changed to lowercase
+  namespace: argocd
 spec:
   project: default
   source:
