@@ -59,9 +59,3 @@ jobs:
 
       - name: Deploy to Container
         run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
-
-      - name: Update kubeconfig
-        run: aws eks --region us-west-1 update-kubeconfig --name devopsola-cluster
-
-      - name: Deploy to kubernetes
-        run: kubectl apply -f deployment-service.yaml
