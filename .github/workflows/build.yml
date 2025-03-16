@@ -63,16 +63,16 @@ jobs:
         # UPdate the K8s Manifest Files
       - name: Update K8s Manifests
         run: |
-          cat deploy/deployment-service.yaml
-          sed -i "s|image: 1nfosecsingh/demo-app:.*|image: 1nfosecsingh/demo-app:${{ env.VERSION }}|g" deploy/deployment-service.yaml
-          cat deploy/deployment-service.yaml
+          cat deployment-service.yaml 
+          sed -i "s|image: sholly333/skyebank:.*|image: sholly333/skyebank:${{ github.sha }}|g" deployment-service.yaml
+          cat deployment-service.yaml
 
       # Update Github
       - name: Commit the changes
         run: |
           git config --global user.email "<>"
           git config --global user.name "GitHub Actions Bot"
-          git add deploy/deployment-service.yaml
+          git add deployment-service.yaml
           git commit -m "Update deployment-service.yaml with new image version - ${{ env.VERSION }}"
           git remote set-url origin https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/infosecsingh/Flask-App-GitHub-Actions-ArgoCD.git
           git push origin master
