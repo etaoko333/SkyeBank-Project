@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: skyebank-app
+  namespace: argocd  # Ensure ArgoCD is installed in this namespace
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/etaoko333/SkyeBank-Project.git  # Your GitHub repo
+    targetRevision: main
+    path: manifests  # Folder in your repo containing Kubernetes YAMLs
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: skyebank
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
