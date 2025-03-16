@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/etaoko333/SkyeBank-Project.git  # Your GitHub repo
     targetRevision: main
-    path: manifests  # Folder in your repo containing Kubernetes YAMLs
+    path: deployment-service.yaml  # Folder in your repo containing Kubernetes YAMLs
   destination:
     server: https://kubernetes.default.svc
     namespace: skyebank
