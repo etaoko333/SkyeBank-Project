@@ -60,8 +60,19 @@ jobs:
       - name: Deploy to Container
         run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
 
-      - name: Update kubeconfig
-        run: aws eks --region us-west-1 update-kubeconfig --name devopsola-cluster
+        # UPdate the K8s Manifest Files
+      - name: Update K8s Manifests
+        run: |
+          cat deployment-service.yaml 
+          sed -i "s|image: sholly333/skyebank:.*|image: sholly333/skyebank:${{ github.sha }}|g" deployment-service.yaml
+          cat deployment-service.yaml
 
-      - name: Deploy to kubernetes
-        run: kubectl apply -f ./deployment-service.yml
+      # Update Github
+      - name: Commit the changes
+        run: |
+          git config --global user.email "<>"
+          git config --global user.name "GitHub Actions Bot"
+          git add deployment-service.yaml
+          git commit -m "Update deployment-service.yaml with new image version - ${{ env.VERSION }}"
+          git remote set-url origin https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/infosecsingh/Flask-App-GitHub-Actions-ArgoCD.git
+          git push origin master
