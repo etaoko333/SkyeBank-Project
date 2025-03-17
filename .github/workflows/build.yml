@@ -18,9 +18,40 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Install Docker Scout
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          echo "/usr/local/bin" >> $GITHUB_PATH
+
+      - name: Docker Scout Scan
+        run: |
+          docker-scout quickview fs://.
+          docker-scout cves fs://.
+
+      - name: Docker Build and Push
+        run: |
+          docker build -t sholly333/skyebank:latest .
+          docker push sholly333/skyebank:latest
+        env:
+          DOCKER_CLI_ACI: 1
+
+      - name: Docker Scout Image Scan
+        run: |
+          docker-scout quickview sholly333/skyebank:latest
+          docker-scout cves sholly333/skyebank:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Docker Pull Image
+        run: docker pull sholly333/skyebank:latest
+
+      - name: Deploy to Container
+        run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
+
+      - name: Update kubeconfig
+        run: aws eks --region us-west-1 update-kubeconfig --name devopsola-cluster
+
+      - name: Deploy to kubernetes
+        run: kubectl apply -f deployment-service.yml
