@@ -51,10 +51,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Docker Pull Image
-        run: docker pull sholly333/skyebank:latest
+        run: sudo docker pull sholly333/skyebank:latest
 
       - name: Deploy to Container
-        run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
+        run: sudo docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
 
       - name: Configure AWS Credentials
         env:
