@@ -62,12 +62,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-west-1
         run: echo "AWS credentials configured"
-        
-      - name: Log in to Argo CD
-        run: |
-          echo "y" | argocd login aa5eb3e1b2a3c4f43a3d7d33e95bccc9-1549865719.us-west-1.elb.amazonaws.com --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
-
-      - name: Notify Argo CD to Sync
-        run: |
-          argocd login aa5eb3e1b2a3c4f43a3d7d33e95bccc9-1549865719.us-west-1.elb.amazonaws.com --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
-          argocd app sync skyebank-app --server=ae72a73ecb7cb48ecb55c5554f1a530f-316014182.us-west-1.elb.amazonaws.com
