@@ -17,3 +17,57 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+          - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install Docker Scout
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          echo "/usr/local/bin" >> $GITHUB_PATH
+
+      - name: Docker Scout Scan
+        run: |
+          docker-scout quickview fs://.
+          docker-scout cves fs://.
+
+      - name: Docker Build and Push
+        run: |
+          docker build -t sholly333/skyebank:latest .
+          docker push sholly333/skyebank:latest
+        env:
+          DOCKER_CLI_ACI: 1
+
+      - name: Docker Scout Image Scan
+        run: |
+          docker-scout quickview sholly333/skyebank:latest
+          docker-scout cves sholly333/skyebank:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Docker Pull Image
+        run: docker pull sholly333/skyebank:latest
+
+      - name: Deploy to Container
+        run: docker run -d --name skyebank-app -p 3000:80 sholly333/skyebank:latest
+
+      - name: Configure AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-1
+        run: echo "AWS credentials configured"
+        
+      - name: Log in to Argo CD
+        run: |
+          echo "y" | argocd login ae72a73ecb7cb48ecb55c5554f1a530f-316014182.us-west-1.elb.amazonaws.com --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+
+      - name: Notify Argo CD to Sync
+        run: |
+          argocd login ae72a73ecb7cb48ecb55c5554f1a530f-316014182.us-west-1.elb.amazonaws.com --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+          argocd app sync skyebank-app --server=ae72a73ecb7cb48ecb55c5554f1a530f-316014182.us-west-1.elb.amazonaws.com
