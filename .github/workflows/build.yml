@@ -36,8 +36,8 @@ jobs:
 
       - name: Docker Build and Push
         run: |
-          docker build -t sholly333/skyebank:latest .
-          docker push sholly333/skyebank:latest
+          sudo docker build -t sholly333/skyebank:latest .
+          sudo docker push sholly333/skyebank:latest
         env:
           DOCKER_CLI_ACI: 1
 
