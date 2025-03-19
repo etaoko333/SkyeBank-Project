@@ -47,9 +47,9 @@ Automating Skyebank-App Deployments: GitOps with ArgoCD, Terraform, SonarQube, D
 
 **Step 3: Configuring GitHub Actions for CI/CD**
 -Create a GitHub Actions Workflow:
-Define a .github/workflows/deploy.yml file to automate the pipeline.
-Copy content and add it to the file
-``name: Build,Analyze,scan
+- Define a .github/workflows/deploy.yml file to automate the pipeline.
+- Copy content and add it to the file
+`name: Build,Analyze,scan
 on:
   push:
     branches:
@@ -70,24 +70,24 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}``
 
 
-the pipeline will trigger, after go to sonarqube homepage and check the result.
+- the pipeline will trigger, after go to sonarqube homepage and check the result.
 
 **Step 6: Add GitHub Runner**
--mGo to GitHub and click on Settings –> Actions –> Runners
+-Go to GitHub and click on Settings –> Actions –> Runners
 - set up runner on ubuntu
 - login in to your instance and use the below commands to add a self-hosted runner
 -ngitub actions pipeline connected
 -Let’s start runner
 -./run.sh
-  our runner is connected and listening for job
+  -our runner is connected and listening for job
 
 **Step 4: Building and Pushing Docker Images**
 Create a Personal Access token for your Dockerhub account
 - Go to docker hub and click on your profile –> Account settings –> security –> New access token. Create a token and go back to github, click on settings and set up a new - environment. just like i did for sonarqube.
 
--mfull github actions pipeline .github/workflows/deploy.yml
+-full github actions pipeline .github/workflows/deploy.yml
 
-``name: Skyebank-App CI/CD Pipeline
+`name: Skyebank-App CI/CD Pipeline
 name: Build
 on:
  push:
@@ -141,41 +141,37 @@ deploy:
  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
  AWS_REGION: us-west-1
- run: echo “AWS credentials configured”
-
-build and deploy successfully
-
-succesfull
-Step 8: Configure argocd
-
-lets generate a password for argocd deployment.
-
-login into your instance
-paste this code on your terminal to connect with your cluster: aws eks — region us-west-1 update-kubeconfig — name devopsola-cluster```
-
+ run: echo “AWS credentials configured”`
+  
+**Step 3: Configure argocd**
+- lets generate a password for argocd deployment.
+- connect into your instance
+- paste this code on your terminal to connect with your cluster: aws eks — region us-west-1 update-kubeconfig — name devopsola-cluster```
 
 **Step 4: ARGO CD SETUP**
-- Let’s install ArgoCD
+- configure install ArgoCD
 - ARGOCD INSTALLATION LINK
 - You will redirected to this page
 - kubectl create namespace argocd
-  ``kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml``
+-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml``
 - COMMANDS ARGOCD
 - By default, argocd-server is not publicly exposed. For this project, we will use a Load Balancer to make it usable:
 - kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 - One load balancer will created in the AWS
-  ``sudo apt install jq -y``
-``export ARGOCD_SERVER=`kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname'`
-when you run this command, it will export the hostname of the ArgoCD server’s load - ---- balancer and store it in the ARGOCD_SERVER environment variable, which you can then use in other commands or scripts to interact with the ArgoCD server. This can be useful when you need to access the ArgoCD web UI or interact with the server programmatically.
+-sudo apt install jq -y``
+-export ARGOCD_SERVER=`kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname
+
+-when you run this command, it will export the hostname of the ArgoCD server’s load - ---- balancer and store it in the ARGOCD_SERVER environment variable, which you can then use in other commands or scripts to interact with the ArgoCD server. This can be useful when you need to access the ArgoCD web UI or interact with the server programmatically.
 - If run this command you will get the load balancer external IP
-``echo $ARGOCD_SERVER``
+- echo $ARGOCD_SERVER
 - Login
--The command you provided is used to extract the password for the initial admin user of ArgoCD, decode it from base64 encoding, and store it in an environment variable named ``ARGO_PWD.``
-``export ARGO_PWD=`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+-The command you provided is used to extract the password for the initial admin user of ArgoCD, decode it from base64 encoding, and store it in an environment variable named
+  -ARGO_PWD.
+- export ARGO_PWD=`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 - If you want to see your password provide the below command
-`echo $ARGO_PWD`
+-echo $ARGO_PWD`
 - Now copy the load balancer IP and paste it into the browser
-`echo $ARGOCD_SERVER`
+-echo $ARGOCD_SERVER`
 - Now you will see this page. if you get an error click on advanced and click on proceed.
 - Now you will see this page and log in to ArgoCD
 - For the password, you have to provide the below command and copy it
