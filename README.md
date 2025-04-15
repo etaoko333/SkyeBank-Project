@@ -49,7 +49,7 @@ Automating Skyebank-App Deployments: GitOps with ArgoCD, Terraform, SonarQube, D
 -Create a GitHub Actions Workflow:
 - Define a .github/workflows/deploy.yml file to automate the pipeline.
 - Copy content and add it to the file
-`name: Build,Analyze,scan
+```name: Build,Analyze,scan
 on:
   push:
     branches:
@@ -67,7 +67,7 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}``
+          ```SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 
 - the pipeline will trigger, after go to sonarqube homepage and check the result.
@@ -87,7 +87,7 @@ Create a Personal Access token for your Dockerhub account
 
 -full github actions pipeline .github/workflows/deploy.yml
 
-`name: Skyebank-App CI/CD Pipeline
+```name: Skyebank-App CI/CD Pipeline
 name: Build
 on:
  push:
@@ -141,7 +141,7 @@ deploy:
  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
  AWS_REGION: us-west-1
- run: echo “AWS credentials configured”`
+ ```run: echo “AWS credentials configured”`
   
 **Step 3: Configure argocd**
 - lets generate a password for argocd deployment.
@@ -153,7 +153,7 @@ deploy:
 - ARGOCD INSTALLATION LINK
 - You will redirected to this page
 - kubectl create namespace argocd
--kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml``
+-```kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml``
 - COMMANDS ARGOCD
 - By default, argocd-server is not publicly exposed. For this project, we will use a Load Balancer to make it usable:
 - kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
