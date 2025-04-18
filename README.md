@@ -49,7 +49,8 @@ Automating Skyebank-App Deployments: GitOps with ArgoCD, Terraform, SonarQube, D
 -Create a GitHub Actions Workflow:
 - Define a .github/workflows/deploy.yml file to automate the pipeline.
 - Copy content and add it to the file
-```name: Build,Analyze,scan
+
+  name: Build,Analyze,scan
 on:
   push:
     branches:
@@ -82,7 +83,7 @@ jobs:
   -our runner is connected and listening for job
 
 **Step 4: Building and Pushing Docker Images**
-Create a Personal Access token for your Dockerhub account
+- Create a Personal Access token for your Dockerhub account
 - Go to docker hub and click on your profile –> Account settings –> security –> New access token. Create a token and go back to github, click on settings and set up a new - environment. just like i did for sonarqube.
 
 -full github actions pipeline .github/workflows/deploy.yml
@@ -131,7 +132,8 @@ jobs:
 deploy:
  needs: build
  runs-on: self-hosted
- steps:
+
+steps:
  — name: Docker Pull Image
  run: sudo docker pull sholly333/skyebank:latest
 - name: Deploy to Container
@@ -146,19 +148,21 @@ deploy:
 **Step 3: Configure argocd**
 - lets generate a password for argocd deployment.
 - connect into your instance
-- paste this code on your terminal to connect with your cluster: aws eks — region us-west-1 update-kubeconfig — name devopsola-cluster```
+- paste this code on your terminal to connect with your cluster: aws eks — region us-west-1 update-kubeconfig — name devopsola-cluster
 
 **Step 4: ARGO CD SETUP**
 - configure install ArgoCD
 - ARGOCD INSTALLATION LINK
 - You will redirected to this page
 - kubectl create namespace argocd
--```kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml``
-- COMMANDS ARGOCD
+
+-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+-
+COMMANDS ARGOCD
 - By default, argocd-server is not publicly exposed. For this project, we will use a Load Balancer to make it usable:
 - kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 - One load balancer will created in the AWS
--sudo apt install jq -y``
+-sudo apt install jq -y
 -export ARGOCD_SERVER=`kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname
 
 -when you run this command, it will export the hostname of the ArgoCD server’s load - ---- balancer and store it in the ARGOCD_SERVER environment variable, which you can then use in other commands or scripts to interact with the ArgoCD server. This can be useful when you need to access the ArgoCD web UI or interact with the server programmatically.
